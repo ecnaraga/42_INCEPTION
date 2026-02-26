@@ -1,0 +1,95 @@
+services:
+  nginx:
+    depends_on:
+      - wordpress
+    image: nginx
+    container_name: nginx
+    build: 
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - wordpress:/var/www/html
+    ports:
+    - "443:443"
+    restart: always
+    # Le .env doit etre ignore par git et se trouve dans le gitignore => Protege informations
+      # sensibles comme mdp pouvant etre contenues dans les variables d'environnement
+    env_file:
+      - ./.env
+
+  wordpress:
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    image: wordpress
+    container_name: wordpress
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    volumes:
+      - wordpress:/var/www/html
+    expose:
+      - 9000
+    restart: always
+    # Le .env doit etre ignore par git et se trouve dans le gitignore => Protege informations
+      # sensibles comme mdp pouvant etre contenues dans les variables d'environnement
+    env_file:
+      - ./.env
+    # environment:
+    #   - MYSQL_PASSWORD_FILE=/run/secrets/db_password
+    # secrets:
+    #   - db_password
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    build: 
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    volumes:
+      - mariadb:/var/lib/mysql
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test: mysqladmin ping || exit 1
+    restart: always
+    expose:
+      - 3306
+    # Le .env doit etre ignore par git et se trouve dans le gitignore => Protege informations
+      # sensibles comme mdp pouvant etre contenues dans les variables d'environnement
+    env_file:
+      - ./.env
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+    #   - MYSQL_PASSWORD_FILE=/run/secrets/db_password
+    #   - MYSQL_ADMIN_PASSWORD_FILE=/run/secrets/admin_password
+    # secrets:
+    #   - db_root_password
+    #   - db_password
+    #   - admin_password
+
+# secrets:
+#   db_root_password:
+#     file: ../secrets/db_root_password.txt
+#   db_password:
+#     file: ../secrets/db_password.txt
+#   admin_password:
+#     file: ../secrets/admin_password.txt
+
+networks:
+  default:
+    name: Inception
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/galambey/data/mariadb'
+  wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/galambey/data/wordpress'
