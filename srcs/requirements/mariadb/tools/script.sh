@@ -13,8 +13,8 @@ service mariadb start
 #   et donc d expand les variables d environnement avant d exec la requete car Mariadb ne le fait pas.
 # Normalement toutes les commandes executees avec mysql (qui necessite donc un db_client ) peuvent etre executee directement par le db_server avec mysqladmin => a verifier
 
-# Attribue un mot depasse a root
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
+# Attribue un mot de passe a root
+mysql -e --protocol=tcp "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
 # mysql -u root -p${DB_ROOT_PASSWORD} -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
 
 # Cree la database wordpress
