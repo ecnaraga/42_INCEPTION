@@ -1,10 +1,8 @@
-MYUSER             := $(shell grep MYUSER /home/.secrets.txt | awk '{print $$2}')
-
 SRC = ./srcs/docker-compose.yml
 
 all :
-	mkdir -p /home/$(MYUSER)/data/wordpress
-	mkdir -p /home/$(MYUSER)/data/mariadb
+	mkdir -p /home/galambey/data/wordpress
+	mkdir -p /home/galambey/data/mariadb
 	docker compose -f ${SRC} build --no-cache
 	docker compose -f ${SRC} up -d
 
@@ -28,7 +26,7 @@ clean : down
 	docker system  prune --all --volumes
 
 fclean : clean
-	sudo rm -rf /home/$(MYUSER)/data
+	sudo rm -rf /home/galambey/data
 
 re : clean
 	make all

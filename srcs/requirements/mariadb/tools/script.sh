@@ -19,24 +19,23 @@ done
 # Normalement toutes les commandes executees avec mysql (qui necessite donc un db_client ) peuvent etre executee directement par le db_server avec mysqladmin => a verifier
 
 # Attribue un mot de passe a root
-# mysql -e --protocol=tcp "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}'";
-mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}'";
-# mysql -u root -p${MARIADB_ROOT_PASSWORD} -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}'";
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
+# mysql -u root -p${DB_ROOT_PASSWORD} -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
 
 # Cree la database wordpress
-mysql -u root -p${MARIADB_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MARIADB_DATABASE}";
+mysql -u root -p${DB_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MARIADB_DATABASE}";
 
 # Cree le user wordpress et lui attribue un mot de passe
-mysql -u root -p${MARIADB_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${MARIADB_USER}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}'";
+mysql -u root -p${DB_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${MARIADB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}'";
 
 # Donne au user wordpress les privilege sur la base de donnees wordpress
-mysql -u root -p${MARIADB_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${MARIADB_DATABASE}.* TO '${MARIADB_USER}'@'%'";
+mysql -u root -p${DB_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${MARIADB_DATABASE}.* TO '${MARIADB_USER}'@'%'";
 
 # Enregistre les changements de privileges
-mysql -u root -p${MARIADB_ROOT_PASSWORD} -e "FLUSH PRIVILEGES";
+mysql -u root -p${DB_ROOT_PASSWORD} -e "FLUSH PRIVILEGES";
 
 # shutdown mariadb pour le lancer avec mysqld
-mysqladmin -u root -p${MARIADB_ROOT_PASSWORD} shutdown
+mysqladmin -u root -p${DB_ROOT_PASSWORD} shutdown
 
 # Lancer avec exec et non via la ligne de command sinon pb car :
 #   exec va remplacer le process en cours dans le service mariadb par le process my_sqld
