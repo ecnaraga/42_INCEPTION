@@ -20,20 +20,20 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-$TMP = getenv('DB_NAME', true);
-define( 'DB_NAME', $TMP );
+$TMP = getenv('WP_DB_NAME', true);
+define( 'WP_DB_NAME', $TMP );
 
 /** Database username */
-$TMP = getenv('DB_USER', true);
-define( 'DB_USER', $TMP );
+$TMP = getenv('MARIADB_USER', true);
+define( 'MARIADB_USER', $TMP );
 
 /** Database password */
-$TMP = getenv('DB_PASSWORD', true);
-define( 'DB_PASSWORD', $TMP );
+$TMP = getenv('MARIADB_PASSWORD', true);
+define( 'MARIADB_PASSWORD', $TMP );
 
 /** Database hostname */
-$TMP = getenv('DB_HOST', true);
-define( 'DB_HOST', $TMP );
+$TMP = getenv('WP_DB_HOST', true);
+define( 'WP_DB_HOST', $TMP );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8' );

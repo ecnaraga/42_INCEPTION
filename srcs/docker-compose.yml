@@ -86,10 +86,10 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/galambey/data/mariadb'
+      device: '/home/${MYUSER}/data/mariadb'
   wordpress:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/galambey/data/wordpress'
+      device: '/home/${MYUSER}/data/wordpress'
