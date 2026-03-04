@@ -1,4 +1,4 @@
-MYUSER             := $(shell grep USERNAME /home/.secrets.txt | awk '{print $$2}')
+MYUSER             := $(shell grep MYUSER /home/.secrets.txt | awk '{print $$2}')
 
 SRC = ./srcs/docker-compose.yml
 
