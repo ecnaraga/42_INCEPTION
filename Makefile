@@ -26,7 +26,7 @@ clean : down
 	docker system  prune --all --volumes
 
 fclean : clean
-	rm -rf /home/galambey/data
+	sudo rm -rf /home/galambey/data
 
 re : clean
 	make all

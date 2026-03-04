@@ -9,12 +9,18 @@ set -x
 # Lance le service mariadb pour pouvoir executer les cmd mysql
 service mariadb start
 
+until mysql -u root -e "SELECT 1" > /dev/null 2>&1; do
+    echo "Waiting for MariaDB to be ready..."
+    sleep 1
+done
+
 # Il faut passer par my sql -e qui permet d executer une requete sql dans la base de donnees via le terminal 
 #   et donc d expand les variables d environnement avant d exec la requete car Mariadb ne le fait pas.
 # Normalement toutes les commandes executees avec mysql (qui necessite donc un db_client ) peuvent etre executee directement par le db_server avec mysqladmin => a verifier
 
 # Attribue un mot de passe a root
-mysql -e --protocol=tcp "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
+# mysql -e --protocol=tcp "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
 # mysql -u root -p${DB_ROOT_PASSWORD} -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}'";
 
 # Cree la database wordpress
