@@ -1,0 +1,78 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+machines=[
+{
+  :name => "INCEPTION",
+  :image => "debian/bookworm64",
+  :hostname => "galambey",
+  :provider => "virtualbox",
+  :memory => "2000",
+  :cpus => "2",
+  :script => "vm_init.sh",
+  # :path_host_synced_folder => "../IOT",
+  # :path_VM_synced_folder => "/IOT"
+},
+  # Add more machine here to do more VM
+]
+
+Vagrant.configure("2") do |config|
+  machines.each do |machine|
+    config.vm.define machine[:name] do |node|
+      # VM Version/Image
+      node.vm.box = machine[:image]
+      # node.vm.network "private_network", ip: machine[:ip]
+      
+      secrets = {}
+      File.readlines(".vagrant-secret").each do |line|
+        key, value = line.strip.split("=", 2)
+        secrets[key] = value
+      end
+      username=secrets["USERNAME"]
+      pass=secrets["PASSWD"]
+      # Machine INCEPTION
+      github_token=secrets["GITHUB_TOKEN"]
+      github_mail=secrets["GITHUB_MAIL"]
+      github_name=secrets["GITHUB_NAME"]
+      project_repository=secrets["PROJECT_REPOSITORY"]
+      nginx_host=secrets["NGINX_HOST"]
+      wp_db_host=secrets["WP_DB_HOST"]
+      wp_db_name=secrets["WP_DB_NAME"]
+      wp_sitepath=secrets["WP_SITEPATH"]
+      wp_siteurl=secrets["WP_SITEURL"]
+      wp_home=secrets["WP_HOME"]
+      wp_admin_user=secrets["WP_ADMIN_USER"]
+      wp_admin_password=secrets["WP_ADMIN_PASSWORD"]
+      wp_admin_mail=secrets["WP_ADMIN_MAIL"]
+      mariadb_user=secrets["MARIADB_USER"]
+      mariadb_password=secrets["MARIADB_PASSWORD"]
+      mariadb_root_password=secrets["MARIADB_ROOT_PASSWORD"]
+      mariadb_database=secrets["MARIADB_DATABASE"]
+
+      # wordpress_admin_user=secrets["WORDPRESS_ADMIN_USER"]
+      # wordpress_admin_password=secrets["WORDPRESS_ADMIN_PASSWORD"]
+      # wordpress_admin_email=secrets["WORDPRESS_ADMIN_EMAIL"]
+      # domain_name=secrets["DOMAIN_NAME"]
+      
+      # VM hostname
+      node.vm.hostname = machine[:hostname]
+      # VM provider
+      node.vm.provider machine[:provider] do |vb|
+        # # Graphic Interface
+        # vb.gui = true
+        # VM name
+        vb.name = machine[:name]
+        # VM RAM
+        vb.memory = machine[:memory]
+        # VM cpu
+        vb.cpus = machine[:cpus]
+      end
+      # VM script configuration to run
+      node.vm.provision "shell", path: machine[:script], args: [username, pass, github_token, github_mail, github_name, project_repository, nginx_host, wp_db_host, wp_db_name, wp_sitepath, wp_siteurl, wp_home, wp_admin_user, wp_admin_password, wp_admin_mail, mariadb_user, mariadb_password, mariadb_root_password, mariadb_database]
+      # Define shared folder between Host machine and VM => "path_host_folder_name", "path_VM_folder_name" 
+      # node.vm.synced_folder machine[:path_host_synced_folder], machine[:path_VM_synced_folder]
+      # Disable the default share of the current code directory.
+      config.vm.synced_folder ".", "/vagrant", disabled: true
+    end
+  end
+end
